@@ -326,7 +326,7 @@ def scatter2d(model, data,
         if isinstance(colors, dict):
             cmap = colors
         else:
-            from pandas.tools.plotting import _get_standard_colors
+            from pandas.plotting._style import _get_standard_colors
             classes = c.drop_duplicates()
             color_values = _get_standard_colors(num_colors=len(classes),
                                                 colormap=kwargs["cmap"] if "cmap" in kwargs else None,
