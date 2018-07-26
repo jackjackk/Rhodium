@@ -127,7 +127,7 @@ def _to_problem(model):
     problem.constraints[:] = "==0"
     return (problem, levers)
 
-def optimize(model, algorithm="NSGAII", NFE=10000, module="platypus", **kwargs):
+def optimize(model, algorithm="NSGAII", NFE=10000, module="platypus", progress_bar=None, **kwargs):
     module = __import__(module, fromlist=[''])
     class_ref = getattr(module, algorithm)
     
@@ -135,7 +135,12 @@ def optimize(model, algorithm="NSGAII", NFE=10000, module="platypus", **kwargs):
     args["problem"], levers = _to_problem(model)
     
     instance = class_ref(**args)
-    instance.run(NFE)
+    if progress_bar is not None:
+        pbar = progress_bar(total=NFE)
+        callback = lambda x: pbar.update(x.nfe-pbar.n)
+    else:
+        callback = None
+    instance.run(NFE, callback=callback)
     
     result = DataSet()
     
